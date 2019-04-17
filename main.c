@@ -1,11 +1,11 @@
 #include <main.h>
 
 struct config{
-    int nch;
-    int qfreq;
-    int bins;
-    int nshotsperchunk;
-    int nsubchunk;
+	int nch;
+	int qfreq;
+	int bins;
+	int nshotsperchunk;
+	int nsubchunk;
 };
 
 struct callback_data{
@@ -19,22 +19,19 @@ void callback(){
 }
 
 int main(){
-    struct config *config;
+	struct config *config;
 	struct callback_data *callback_data;
 	int pointsperchunk;
 	int buffersize;
-    read_config("config.ini", config);
-
+	read_config("config.ini", config);
 	
 	callback_data = malloc(sizeof(callback_data));
 	callback_data->config = config;
-
-    I16 cardnumber = register_card();
-    configure_card(cardnumber);
-    pointsperchunk = config->nch * config->bins * config->nshotsperchunk / config->nsubchunk;
-    buffersize = pointsperchunk * sizeof(I16);
-    callback_data->channel0_buffer = WD_Buffer_Alloc(cardnumber, buffersize);
-    callback_data->channel1_buffer = WD_Buffer_Alloc(cardnumber, buffersize);
+	I16 cardnumber = register_card();
+	configure_card(cardnumber);
+	pointsperchunk = config->nch * config->bins * config->nshotsperchunk / config->nsubchunk;
+	buffersize = pointsperchunk * sizeof(I16);
+	setup_buffers(cardnumber, buffersize, callback_data->channel0_buffer, callback_data->channel1_buffer);
 	WD_AI_ContBufferSetup64(cardnumber, callback_data->channel0_buffer, pointsperchunk, Id);
 	WD_AI_ContBufferSetup64(cardnumber, callback_data->channel1_buffer, pointsperchunk, Id);
 	WD_AI_EventCallBackEx_x64(cardnumber, 1, DAQEnd, callback, callback_data);
@@ -43,15 +40,51 @@ int main(){
 
 void setup_buffers(int cardnumber, int buffersize, I16 *ch0_buff, I16 *ch1_buff){
 	ch0_buff = WD_Buffer_Alloc(cardnumber, buffersize);
-    ch1_buff = WD_Buffer_Alloc(cardnumber, buffersize);
+	if(!ch0_buff){
+		printf("failed allocating channel 0");
+		WD_Release_Card(cardnumber);
+		exit(1);
+	}
+	ch1_buff = WD_Buffer_Alloc(cardnumber, buffersize);
+	if(!ch1_buff){
+		printf("failed allocating channel 1");
+		WD_Buffer_Free(cardnumber, ch0_buff);
+		WD_Release_Card(cardnumber);
+		exit(1);
+	}
 }
 
 void configure_card(I16 cardnumber){
-    WD_AI_Config(cardnumber, WD_IntTimeBase, TRUE, WD_AI_ADCONVSRC_TimePacer, FALSE, TRUE);
-    WD_AI_Trig_Config(cardnumber, WD_AI_TRGMOD_DELAY, WD_AI_TRGSRC_ExtD, WD_AI_TrgPositive, CH0ATRIG, 0.0, 0, 0, 0, 0);
-    WD_AI_CH_ChangeParam(cardnumber, All_Channels, AI_IMPEDANCE, IMPEDANCE_50Ohm);
-    WD_AI_CH_ChangeParam(cardnumber, 0, AI_RANGE, AD_B_2_V);
-	WD_AI_CH_ChangeParam(cardnumber, 1, AI_RANGE, AD_B_2_V);
+	err = WD_AI_Config(cardnumber, WD_IntTimeBase, TRUE, WD_AI_ADCONVSRC_TimePacer, FALSE, TRUE);
+	if(err!=0){
+		printf("WD_AI_Config error = %d", err);
+		WD_Release_Card(cardnumber);
+		exit(1);
+	}
+	err = WD_AI_Trig_Config( cardnumber, WD_AI_TRGMOD_DELAY, WD_AI_TRGSRC_ExtD, WD_AI_TrgPositive, CH0ATRIG, 0.0, 0, 0, 0, 0);
+	if(err!=0){
+		printf("WD_AI_Trig_Config = %d", err);
+		WD_Release_Card(cardnumber);
+		exit(1);
+	}
+	err = WD_AI_CH_ChangeParam(cardnumber, All_Channels, AI_IMPEDANCE, IMPEDANCE_50Ohm);
+	if(err!=0){
+		printf("WD_AI_CH_ChangeParam changing impedance failed = %d", err);
+		WD_Release_Card(cardnumber);
+		exit(1);
+	}
+	err = WD_AI_CH_ChangeParam(cardnumber, 0, AI_RANGE, AD_B_2_V);
+	if(err!=0){
+		printf("WD_AI_CH_ChangeParam channel 0 changing voltage failed = %d", err);
+		WD_Release_Card(cardnumber);
+		exit(1);
+	}
+	err = WD_AI_CH_ChangeParam(cardnumber, 1, AI_RANGE, AD_B_2_V);
+	if(err!=0){
+		printf("WD_AI_CH_ChangeParam channel 1 changing voltage failed = %d", err);
+		WD_Release_Card(cardnumber);
+		exit(1);
+	}
 }
 
 I16 register_card(){
