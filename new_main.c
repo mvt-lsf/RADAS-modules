@@ -27,7 +27,7 @@ void AI_CallBack()
     //FILE *file = fopen("file","a");
     //fprintf(file,"callback");
     //fclose(file);
-    int a = 2 + 2;
+    printf("callback");
 }
 
 void read_config(char *filename, struct config *config)
@@ -100,29 +100,6 @@ int main()
     printf("\nBuffers allocated");
     printf("\nPointsPerChunk: %d BufferSize: %d", pointsperchunk, buffersize);
 
-    err = WD_AI_ContBufferSetup(cardnumber, callback_data->channel0_buffer, pointsperchunk, &Id);
-    if (err != 0)
-    {
-        printf("Error seting up buffers ch0 err:%d, id:%d card:%d", err, Id, cardnumber);
-        WD_Buffer_Free(cardnumber, callback_data->channel0_buffer);
-        WD_Buffer_Free(cardnumber, callback_data->channel1_buffer);
-        WD_Release_Card(cardnumber);
-        _getch();
-        exit(1);
-    }
-    err = WD_AI_ContBufferSetup(cardnumber, callback_data->channel1_buffer, pointsperchunk, &Id);
-    if (err != 0)
-    {
-        printf("Error seting up buffers ch1 err:%d", err);
-        WD_AI_ContBufferReset(cardnumber);
-        WD_Buffer_Free(cardnumber, callback_data->channel0_buffer);
-        WD_Buffer_Free(cardnumber, callback_data->channel1_buffer);
-        WD_Release_Card(cardnumber);
-        _getch();
-        exit(1);
-    }
-    printf("\nBuffers setup");
-
     err = WD_AI_Config(cardnumber, WD_IntTimeBase, 1, WD_AI_ADCONVSRC_TimePacer, 0, 1);
     if (err != 0)
     {
@@ -158,11 +135,35 @@ int main()
     }
     printf("\nCard configured");
 
+    err = WD_AI_ContBufferSetup(cardnumber, callback_data->channel0_buffer, pointsperchunk, &Id);
+    if (err != 0)
+    {
+        printf("Error seting up buffers ch0 err:%d, id:%d card:%d", err, Id, cardnumber);
+        WD_Buffer_Free(cardnumber, callback_data->channel0_buffer);
+        WD_Buffer_Free(cardnumber, callback_data->channel1_buffer);
+        WD_Release_Card(cardnumber);
+        _getch();
+        exit(1);
+    }
+    err = WD_AI_ContBufferSetup(cardnumber, callback_data->channel1_buffer, pointsperchunk, &Id);
+    if (err != 0)
+    {
+        printf("Error seting up buffers ch1 err:%d", err);
+        WD_AI_ContBufferReset(cardnumber);
+        WD_Buffer_Free(cardnumber, callback_data->channel0_buffer);
+        WD_Buffer_Free(cardnumber, callback_data->channel1_buffer);
+        WD_Release_Card(cardnumber);
+        _getch();
+        exit(1);
+    }
+    printf("\nBuffers setup");
+
     //I16 call = WD_AI_EventCallBackEx_x64(cardnumber, 1, TrigEvent, (ULONG_PTR) callback, (void *)callback_data);
+    printf("\nTrying to set up callback");
     I16 call = WD_AI_EventCallBack_x64(cardnumber, 1, TrigEvent, (ULONG_PTR)AI_CallBack);
     printf("\nCallback registered %d", call);
 
-    err = WD_AI_ContReadChannel64(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP);
+    err = WD_AI_ContReadChannel(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP);
     if (err != 0)
     {
         printf("Error Scanning channels err:%d", err);

@@ -17,9 +17,9 @@ I16 *ai_buf;;
 I16 *ai_buf2;
 
 I16 card, err, card_num=0, Id;
-BOOLEAN fStop=0, fStop2=0, bReady=0;
+BOOLEAN =0;
 U32 count=0, startPos=0;
-U32 i, k, RdyTrigCnt=0;
+U32 i, k =0;
 U16 CardType[] = {PCIe_9852, PXIe_9852}, card_type=0;
 
 void AI_TrigCallBack()
@@ -79,7 +79,7 @@ void main()
 	   WD_Release_Card(card);
        exit(1);
    }
-
+    
    err=WD_AI_ContBufferSetup (card, ai_buf, SCANCOUNT, &Id);
    if (err!=0) {
        printf("P9842_AI_ContBufferSetup 0 error=%d", err);
