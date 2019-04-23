@@ -15,14 +15,18 @@ struct callback_data{
 	I16 *channel1_buffer;
 };
 
-void callback(void *calldata){
-	struct callback_data *data = (struct callback_data *) calldata;
+void callback(struct callback_data data){
+	printf("callback");
+	int buffersize = data.config->bins;
+	//I16 *buffer = data->channel0_buffer;
+	//for(int i = 0; i < buffersize; i++){
+	//	printf("voltage: %d", buffer[i]);
+	//}
 	//hacer algo con los buffers
-	//Sleep(100);
+	Sleep(100);
 	//FILE *file = fopen("file","a");
 	//fprintf(file,"callback");
 	//fclose(file);
-	printf("callback");
 }
 
 void setup_buffers(int cardnumber, int pointsperchunk, I16 *ch0_buff, I16 *ch1_buff, I16 Id){
@@ -160,7 +164,7 @@ int main(){
 	printf("\nBuffers setup");
 
 	printf("\nTrying to setup callback");
-	I16 call = WD_AI_EventCallBackEx_x64(cardnumber, 1, TrigEvent, (ULONG_PTR) callback, (void *)callback_data);
+	I16 call = WD_AI_EventCallBackEx_x64(cardnumber, 1, TrigEvent, (ULONG_PTR) callback, callback_data);
 	//I16 call = WD_AI_EventCallBack_x64(cardnumber, 1, TrigEvent, (ULONG_PTR)callback);
 	printf("\nCallback registered %d", call);
 	
