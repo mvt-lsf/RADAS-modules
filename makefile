@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -I./headers -IC:/ADLINK/WD-DASK/Include
+CFLAGS = -I./headers -IC:/ADLINK/WD-DASK/Include -g
 ODIR = obj
 LDIR = -LC:/ADLINK/WD-DASK/Lib
 LIBS = -lWD-Dask64
@@ -17,4 +17,4 @@ $(ODIR)/%.o : %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 main : $(OBJ)
-	$(CC) -o $(BIN)/main.exe $(OBJ) $(CFLAGS) $(LDIR) $(LIBS)
+	$(CC) -g -o $(BIN)/main.exe $(OBJ) $(CFLAGS) $(LDIR) $(LIBS)

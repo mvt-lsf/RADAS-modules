@@ -16,3 +16,12 @@
 
 #include "config.h"
 #include "card.h"
+
+struct callback_data{
+	struct config *config;
+	I16 cardnumber;
+	I16 *channel0_buffer;
+	I16 *channel1_buffer;
+};
+
+void callback();
