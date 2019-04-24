@@ -26,9 +26,9 @@ int main(){
 	I16 call = WD_AI_EventCallBack_x64(cardnumber, 1, TrigEvent, (ULONG_PTR)callback);
 
 	ch0_pipe = CreateNamedPipe("\\\\.\\pipe\\ch0_raw_pipe",
-							GENERIC_WRITE,
+							PIPE_ACCESS_OUTBOUND,
 							PIPE_WAIT | PIPE_TYPE_MESSAGE,
-							PIPE_WAIT,
+							PIPE_UNLIMITED_INSTANCES,
 							buffersize,
 							0,
 							NMPWAIT_USE_DEFAULT_WAIT,
