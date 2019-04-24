@@ -25,14 +25,14 @@ int main(){
 	setup_buffers(cardnumber, pointsperchunk, callback_data->channel0_buffer, callback_data->channel1_buffer, Id);
 	I16 call = WD_AI_EventCallBack_x64(cardnumber, 1, TrigEvent, (ULONG_PTR)callback);
 
-	ch0_pipe = CreateNamedPipe("\\\\.\\pipe\\ch0_raw_pipe",
-							PIPE_ACCESS_OUTBOUND,
-							PIPE_WAIT | PIPE_TYPE_MESSAGE,
-							PIPE_UNLIMITED_INSTANCES,
-							buffersize,
-							0,
-							NMPWAIT_USE_DEFAULT_WAIT,
-							NULL);
+	ch0_pipe =  CreateNamedPipe(TEXT("\\\\.\\pipe\\ch0_raw_pipe"),
+                            PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,   // FILE_FLAG_FIRST_PIPE_INSTANCE is not needed but forces CreateNamedPipe(..) to fail if the pipe already exists...
+                            PIPE_WAIT,
+                            1,
+                            buffersize,
+                            0,
+                            NMPWAIT_USE_DEFAULT_WAIT,
+                            NULL);
 
 	if (ch0_pipe == INVALID_HANDLE_VALUE){
 		printf("\nPipe failed ERR=%d", GetLastError());
