@@ -28,14 +28,17 @@ int main(){
 	ch0_pipe = CreateNamedPipe("\\\\.\\pipe\\ch0_raw_pipe",
 							GENERIC_WRITE,
 							PIPE_WAIT | PIPE_TYPE_MESSAGE,
-							1,
+							PIPE_WAIT,
 							buffersize,
-							0, NMPWAIT_USE_DEFAULT_WAIT,
+							0,
+							NMPWAIT_USE_DEFAULT_WAIT,
 							NULL);
 
-	printf("\nTried to initiate pipe");
-	if (ch0_pipe == INVALID_HANDLE_VALUE) exit(-2);
-	printf("\npipe working");
+	if (ch0_pipe == INVALID_HANDLE_VALUE){
+		printf("\nPipe failed ERR=%d", GetLastError());
+		_getch();
+		exit(-2);
+	}
 
 	err = WD_AI_ContReadChannel(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP);
 	if(err!=0){
