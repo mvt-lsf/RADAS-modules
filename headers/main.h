@@ -1,15 +1,7 @@
-#ifndef BOOLS_H
-#define BOOLS_H
+#ifndef STDLIBS_H
+#define STDLIBS_H
 #include <stdbool.h>
-#endif
-
-#ifndef STDLIB_H
-#define STDLIB_H
 #include <stdlib.h>
-#endif
-
-#ifndef STDIO_H
-#define STDIO_H
 #include <stdio.h>
 #endif
 
@@ -17,4 +9,9 @@
 #include <string.h>
 #include <windows.h>
 
+#ifndef WD_DASK_H
+#define WD_DASK_H
 #include "WD-dask64.h"
+#endif
+
+#include "card.h"
