@@ -14,4 +14,5 @@
 #include "WD-dask64.h"
 #endif
 
+#include "config.h"
 #include "card.h"

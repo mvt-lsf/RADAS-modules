@@ -1,13 +1,5 @@
 #include "main.h"
 
-struct config{
-	int nch;
-	int qfreq;
-	int bins;
-	int nshotsperchunk;
-	int nsubchunk;
-};
-
 struct callback_data{
 	struct config *config;
 	I16 cardnumber;
@@ -31,29 +23,11 @@ void callback(void *data){
 	Sleep(100);
 }
 
-void read_config(char * filename, struct config *config){
-    char *line = malloc(sizeof(char) * 200);
-    char *value = malloc(sizeof(char) * 200);
-    FILE *file_config = fopen(filename, "r");
-
-    while(fscanf(file_config, "%200s %200s", line, value) != EOF){
-        if (strcmp(line, "NCh") == 0)
-            config->nch = atoi(value);
-        if (strcmp(line, "qFreq") == 0)
-            config->qfreq = atoi(value);
-        if (strcmp(line, "Bins") == 0)
-            config->bins = atoi(value);
-        if (strcmp(line, "NShotsChk") == 0)
-            config->nshotsperchunk = atoi(value);
-        if (strcmp(line, "NSubChk") == 0)
-            config->nsubchunk = atoi(value);
-    }
-}
-
 int main(){
 	struct config *config;
 	int pointsperchunk;
 	int buffersize;
+	I16 cardnumber;
 	I16 Id;
 	I16 err;
 	config = malloc(sizeof(struct config));
@@ -62,7 +36,7 @@ int main(){
 	callback_data = malloc(sizeof(struct callback_data));
 	callback_data->config = config;
 
-	I16 cardnumber = register_card();
+	cardnumber = register_card();
 	callback_data->cardnumber = cardnumber;
 	printf("\nRegistered card");
 
@@ -71,6 +45,7 @@ int main(){
 
 	allocate_buffers(cardnumber, buffersize, &(callback_data->channel0_buffer), &(callback_data->channel1_buffer));
 	printf("\nBuffers allocated");
+
 	configure_card(cardnumber);
 	printf("\nCard configured");
 
