@@ -1,6 +1,7 @@
 #include "main.h"
 
 struct callback_data *callback_data;
+int chunk_index;
 HANDLE ch0_pipe; 
 
 int main(){
@@ -10,6 +11,8 @@ int main(){
 	I16 cardnumber;
 	I16 Id;
 	I16 err;
+
+	chunk_index = 0;
 
 	config = malloc(sizeof(struct config));
 	read_config("config.ini", config);
@@ -47,29 +50,37 @@ int main(){
 		WD_Buffer_Free (cardnumber, callback_data->channel0_buffer);
 		WD_Buffer_Free (cardnumber, callback_data->channel1_buffer);
 		WD_Release_Card(cardnumber);
-    	exit(1);
+		exit(1);
 	}
 	printf("\nScanning channels");
 
 	_getch();
 	U64 count, startpos;
 	WD_AI_AsyncClear64(cardnumber, &startpos, &count);
-   	WD_AI_ContBufferReset(cardnumber);
-   	WD_Buffer_Free(cardnumber, callback_data->channel0_buffer);
-   	WD_Buffer_Free(cardnumber, callback_data->channel1_buffer);
-   	err = WD_Release_Card(cardnumber);
+	WD_AI_ContBufferReset(cardnumber);
+	WD_Buffer_Free(cardnumber, callback_data->channel0_buffer);
+	WD_Buffer_Free(cardnumber, callback_data->channel1_buffer);
+	err = WD_Release_Card(cardnumber);
 	CloseHandle(ch0_pipe);
 	printf("\nCount: %d \n Startpos: %d", startpos, count);
-   	printf("\nPress ENTER to exit the program. ");
+	printf("\nPress ENTER to exit the program. ");
 	_getch();
 	exit(1);
 }
 
 void callback(){
-	printf("\ncallback");
-	printf(" %d ", callback_data->cardnumber);
-	I16 *buffer = callback_data->channel0_buffer;
-	int buffersize = callback_data->config->bins;
-	long unsigned byteswritten = 0;
-	WriteFile(ch0_pipe, buffer, buffersize, &byteswritten, NULL);
+	//chunk_index++;
+	//printf("\ncallback : %d/%d", chunk_index, callback_data->config->nshotsperchunk);
+	//if (chunk_index >= callback_data->config->nshotsperchunk){
+		I16 *buffer = callback_data->channel0_buffer;
+		int pointsperchunk = callback_data->config->nch * callback_data->config->bins * callback_data->config->nshotsperchunk / callback_data->config->nsubchunk;
+		int buffersize = pointsperchunk * sizeof(I16);
+		LPDWORD byteswritten = 0;
+		WriteFile(ch0_pipe, buffer, buffersize, byteswritten, NULL);
+		FlushFileBuffers(ch0_pipe);
+		printf("\nSent chunk size: %d", buffersize);
+		printf("\nbytes written %d", byteswritten);
+
+		chunk_index = 0;
+	//}
 }
