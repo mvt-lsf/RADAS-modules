@@ -21,7 +21,7 @@ int main(){
 
 	cardnumber = register_card();
 	callback_data->cardnumber = cardnumber;
-	pointsperchunk = config->nch * config->bins * config->nshotsperchunk / config->nsubchunk;
+	pointsperchunk = config->bins * config->nshotsperchunk;
 	buffersize = pointsperchunk * sizeof(I16);
 	configure_card(cardnumber);
 	allocate_buffers(cardnumber, buffersize, &(callback_data->channel0_buffer), &(callback_data->channel1_buffer));

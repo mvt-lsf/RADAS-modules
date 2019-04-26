@@ -19,7 +19,6 @@ while True:
 	#while len(data) == readsize:
 	#	err,data = win32file.ReadFile(handle, readsize)
 	#	buffer += data
-	
 	buffer = numpy.frombuffer(buffer, dtype=numpy.float64)
 #	matplotlib.pyplot.plot(waterfall)
 #	matplotlib.pyplot.figure()
