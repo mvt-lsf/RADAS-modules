@@ -75,7 +75,7 @@ void callback(){
 	int destbuffersize = pointsperchunk * sizeof(double);
 	int buffersize = pointsperchunk * sizeof(I16);
 
-	destbuffer = malloc(destbuffer);
+	destbuffer = malloc(destbuffersize);
 
 	WD_AI_ContVScale(callback_data->cardnumber, AD_B_2_V, buffer, destbuffer, pointsperchunk);
 	LPDWORD byteswritten = 0;
