@@ -81,6 +81,9 @@ void callback(){
 	LPDWORD byteswritten = 0;
 	WriteFile(ch0_pipe, destbuffer, destbuffersize, byteswritten, NULL);
 	FlushFileBuffers(ch0_pipe);
+
+	free(destbuffer);
+	
 	printf("\nSent chunk size: %d", destbuffersize);
 	printf("\nbytes written %d", byteswritten);
 	chunk_index = 0;
