@@ -20,14 +20,8 @@ while True:
 	#	err,data = win32file.ReadFile(handle, readsize)
 	#	buffer += data
 	
-	buffer = numpy.frombuffer(buffer, dtype=numpy.int16)
-	buffer.shape = (-1,3000)
-	print(buffer.shape)
-	for i in range(buffer[0]):
-		data = numpy.ma.average(buffer[:,i], axis=0)
-		waterfall += data
-	print(waterfall)
+	buffer = numpy.frombuffer(buffer, dtype=numpy.float64)
 #	matplotlib.pyplot.plot(waterfall)
-	matplotlib.pyplot.figure()
-	matplotlib.pyplot.imshow(waterfall, aspect='auto', cmap='jet')  # plot con el filtro
-#	matplotlib.pyplot.plot(buffer)
+#	matplotlib.pyplot.figure()
+#	matplotlib.pyplot.imshow(waterfall, aspect='auto', cmap='jet')  # plot con el filtro
+	matplotlib.pyplot.plot(buffer)
