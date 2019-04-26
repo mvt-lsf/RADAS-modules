@@ -71,7 +71,7 @@ int main(){
 void callback(){
 	I16 *buffer = callback_data->channel0_buffer;
 	double *destbuffer;
-	int pointsperchunk = callback_data->config->nch * callback_data->config->bins * callback_data->config->nshotsperchunk / callback_data->config->nsubchunk;
+	int pointsperchunk = callback_data->config->nshotsperchunk * callback_data->config->bins;
 	int destbuffersize = pointsperchunk * sizeof(double);
 	int buffersize = pointsperchunk * sizeof(I16);
 
@@ -83,7 +83,7 @@ void callback(){
 	FlushFileBuffers(ch0_pipe);
 
 	free(destbuffer);
-	
+
 	printf("\nSent chunk size: %d", destbuffersize);
 	printf("\nbytes written %d", byteswritten);
 	chunk_index = 0;
