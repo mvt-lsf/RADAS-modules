@@ -23,8 +23,8 @@ int main(){
 	callback_data->cardnumber = cardnumber;
 	pointsperchunk = config->nch * config->bins * config->nshotsperchunk / config->nsubchunk;
 	buffersize = pointsperchunk * sizeof(I16);
-	allocate_buffers(cardnumber, buffersize, &(callback_data->channel0_buffer), &(callback_data->channel1_buffer));
 	configure_card(cardnumber);
+	allocate_buffers(cardnumber, buffersize, &(callback_data->channel0_buffer), &(callback_data->channel1_buffer));
 	setup_buffers(cardnumber, pointsperchunk, callback_data->channel0_buffer, callback_data->channel1_buffer, Id);
 	I16 call = WD_AI_EventCallBack_x64(cardnumber, 1, TrigEvent, (ULONG_PTR)callback);
 
