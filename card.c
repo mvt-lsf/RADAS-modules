@@ -52,7 +52,7 @@ void configure_card(I16 cardnumber){
 		exit(1);
 	}
 	//err = WD_AI_Trig_Config( cardnumber, WD_AI_TRGMOD_DELAY, WD_AI_TRGSRC_ExtD, WD_AI_TrgPositive, CH0ATRIG, 0.0, 0, 0, 0, 0);
-	err = WD_AI_Trig_Config(cardnumber, WD_AI_TRGMOD_POST, WD_AI_TRGSRC_ANA, WD_AI_TrgNegative, 0, 0.0, 0, 0, 0, 0);
+	err = WD_AI_Trig_Config(cardnumber, WD_AI_TRGMOD_DELAY, WD_AI_TRGSRC_ExtD, WD_AI_TrgNegative, 0, 0.0, 0, 0, 0, 0);
 	if(err!=0){
 		printf("WD_AI_Trig_Config = %d", err);
 		WD_Release_Card(cardnumber);
