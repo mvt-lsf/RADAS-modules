@@ -69,18 +69,17 @@ int main(){
 }
 
 void callback(){
-	//chunk_index++;
-	//printf("\ncallback : %d/%d", chunk_index, callback_data->config->nshotsperchunk);
-	//if (chunk_index >= callback_data->config->nshotsperchunk){
-		I16 *buffer = callback_data->channel0_buffer;
-		int pointsperchunk = callback_data->config->nch * callback_data->config->bins * callback_data->config->nshotsperchunk / callback_data->config->nsubchunk;
-		int buffersize = pointsperchunk * sizeof(I16);
-		LPDWORD byteswritten = 0;
-		WriteFile(ch0_pipe, buffer, buffersize, byteswritten, NULL);
-		FlushFileBuffers(ch0_pipe);
-		printf("\nSent chunk size: %d", buffersize);
-		printf("\nbytes written %d", byteswritten);
+	I16 *buffer = callback_data->channel0_buffer;
+	double *destbuffer;
+	int pointsperchunk = callback_data->config->nch * callback_data->config->bins * callback_data->config->nshotsperchunk / callback_data->config->nsubchunk;
+	int destbuffersize = pointsperchunk * sizeof(double);
+	int buffersize = pointsperchunk * sizeof(I16);
 
-		chunk_index = 0;
-	//}
+	WD_AI_ContVScale(callback_data->cardnumber, AD_B_2_V, buffer, destbuffer, pointsperchunk);
+	LPDWORD byteswritten = 0;
+	WriteFile(ch0_pipe, destbuffer, destbuffersize, byteswritten, NULL);
+	FlushFileBuffers(ch0_pipe);
+	printf("\nSent chunk size: %d", destbuffersize);
+	printf("\nbytes written %d", byteswritten);
+	chunk_index = 0;
 }
