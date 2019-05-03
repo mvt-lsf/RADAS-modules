@@ -11,6 +11,7 @@ int main(){
 	I16 cardnumber;
 	I16 Id;
 	I16 err;
+	I16 call;
 
 	chunk_index = 0;
 
@@ -26,7 +27,7 @@ int main(){
 	configure_card(cardnumber);
 	allocate_buffers(cardnumber, buffersize, &(callback_data->channel0_buffer), &(callback_data->channel1_buffer));
 	setup_buffers(cardnumber, pointsperchunk, callback_data->channel0_buffer, callback_data->channel1_buffer, Id);
-	I16 call = WD_AI_EventCallBack_x64(cardnumber, 1, TrigEvent, (ULONG_PTR)callback);
+	call = WD_AI_EventCallBack_x64(cardnumber, 1, TrigEvent, (ULONG_PTR)callback); // Agregar error checking
 
 	ch0_pipe =  CreateNamedPipe(TEXT("\\\\.\\pipe\\ch0_raw_pipe"),
                             PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,   // FILE_FLAG_FIRST_PIPE_INSTANCE is not needed but forces CreateNamedPipe(..) to fail if the pipe already exists...
@@ -43,7 +44,7 @@ int main(){
 		exit(-2);
 	}
 
-	err = WD_AI_ContReadChannel(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP);
+	err = WD_AI_ContReadChannel(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP); //mover a card.c
 	if(err!=0){
 		printf("Error Scanning channels err:%d", err);
 		WD_AI_ContBufferReset (cardnumber);
