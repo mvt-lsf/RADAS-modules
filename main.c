@@ -71,21 +71,11 @@ int main(){
 
 void callback(){
 	I16 *buffer = callback_data->channel0_buffer;
-	double *destbuffer;
 	int pointsperchunk = callback_data->config->nshotsperchunk * callback_data->config->bins;
-	int destbuffersize = pointsperchunk * sizeof(double);
 	int buffersize = pointsperchunk * sizeof(I16);
 
-	destbuffer = malloc(destbuffersize);
-
-	WD_AI_ContVScale(callback_data->cardnumber, AD_B_2_V, buffer, destbuffer, pointsperchunk);
-	LPDWORD byteswritten = 0;
-	WriteFile(ch0_pipe, destbuffer, destbuffersize, byteswritten, NULL);
+	WriteFile(ch0_pipe, tbuffer, tbuffersize, byteswritten, NULL);
 	FlushFileBuffers(ch0_pipe);
 
-	free(destbuffer);
-
-	printf("\nSent chunk size: %d", destbuffersize);
-	printf("\nbytes written %d", byteswritten);
-	chunk_index = 0;
+	printf("\nSent chunk size: %d", buffersize);
 }
