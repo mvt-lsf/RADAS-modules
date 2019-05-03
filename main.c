@@ -44,7 +44,7 @@ int main(){
 		exit(-2);
 	}
 
-	err = WD_AI_ContReadChannel(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP); //mover a card.c
+	err = WD_AI_ContReadChannel(cardnumber, 0, 0, pointsperchunk, 1, 1, ASYNCH_OP);
 	if(err!=0){
 		printf("Error Scanning channels err:%d", err);
 		WD_AI_ContBufferReset (cardnumber);
