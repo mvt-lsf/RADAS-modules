@@ -12,9 +12,9 @@ handle = win32file.CreateFile("\\\\.\\pipe\\ch0_raw_pipe",
                             None)
 print(handle)
 readsize = 3000 * 100 * 2	#toma un chunk
+print(readsize)
+
 while True:
-	print(readsize)
-	print(samples)
 	err,data = win32file.ReadFile(handle, readsize)
 	buffer = numpy.frombuffer(data, dtype=numpy.int16)
 	matplotlib.pyplot.plot(buffer)
