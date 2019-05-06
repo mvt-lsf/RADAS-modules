@@ -1,0 +1,3 @@
+python pipe_raw bins shots_per_chunk
+
+bins tiene que ser la cantidad de puntos que vienen por el pipe *asume int16 tipo de dato*
