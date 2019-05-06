@@ -1,7 +1,6 @@
 import win32pipe, win32file
-import numpy
-import matplotlib.pyplot
-#import bottleneck
+import resource
+import sys
 
 handle = win32file.CreateFile("\\\\.\\pipe\\ch0_raw_pipe",
                             win32file.GENERIC_READ,
@@ -10,12 +9,9 @@ handle = win32file.CreateFile("\\\\.\\pipe\\ch0_raw_pipe",
                             win32file.OPEN_EXISTING,
                             0,
                             None)
-print(handle)
-readsize = 3000 * 100 * 2	#toma un chunk
-print(readsize)
+output_file = open(sys.argv[1],'w')
+readsize = resource.getpagesize()
 
 while True:
-	err,data = win32file.ReadFile(handle, readsize)
-	buffer = numpy.frombuffer(data, dtype=numpy.int16)
-	matplotlib.pyplot.plot(buffer)
-	matplotlib.pyplot.show()
+        err,data = win32file.ReadFile(handle, readsize)
+        file.write(data, file=output_file)
