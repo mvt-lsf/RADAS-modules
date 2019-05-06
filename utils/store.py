@@ -12,8 +12,10 @@ handle = win32file.CreateFile("\\\\.\\pipe\\ch0_raw_pipe",
                             None)
 output_file = open(sys.argv[1],"wb")
 readsize = 4096
-
+time = datetime.datetime.now()
 while True:
+        now = datetime.datetime.now()
         err,data = win32file.ReadFile(handle, readsize)
-        pickle.dump(datetime.datetime.now(), output_file)
+        pickle.dump(now, output_file)
         pickle.dump(data, output_file)
+        print(time.minute - now.minute)
