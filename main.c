@@ -46,7 +46,8 @@ int main(){
 
 	err = WD_AI_ContReadChannel(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP);
 	if(err!=0){
-		printf("Error Scanning channels err:%d", err);
+		printf("\nError Scanning channels err:%d", err);
+		if (err == 50) printf("\nNumero de bines")
 		WD_AI_ContBufferReset (cardnumber);
 		WD_Buffer_Free (cardnumber, callback_data->channel0_buffer);
 		WD_Buffer_Free (cardnumber, callback_data->channel1_buffer);

@@ -4,13 +4,15 @@ import os
 import sys
 import pickle
 
-handle = win32file.CreateFile("\\\\.\\pipe\\ch0_raw_pipe",
+inputpipe = win32file.CreateFile("\\\\.\\pipe\\ch0_raw_pipe",
                             win32file.GENERIC_READ,
                             0,
                             None,
                             win32file.OPEN_EXISTING,
                             0,
                             None)
+outpipe = win32pipe.CreateNamedPipe("\\\\.\\pipe\\ch0_store",
+                                )
 output_file = open(sys.argv[1] + "/data","wb")
 readsize = 4096
 time = datetime.datetime.now()
