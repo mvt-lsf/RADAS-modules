@@ -21,6 +21,9 @@ while True:
         pickle.dump(data, output_file)
         if (now.minute - time.minute) <= 5 :
                 output_file.close()
-                os.remove(sys.argv[1] + "tmp_file")
+                try:
+                        os.remove(sys.argv[1] + "tmp_file")
+                except OSError:
+                        pass
                 os.rename(sys.argv[1] + "/data", sys.argv[1] + "tmp_file")
                 output_file = open(sys.argv[1] + "/data","wb")
