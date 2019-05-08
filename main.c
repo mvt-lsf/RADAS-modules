@@ -47,7 +47,7 @@ int main(){
 	err = WD_AI_ContReadChannel(cardnumber, 0, 0, config->bins, 1, 1, ASYNCH_OP);
 	if(err!=0){
 		printf("\nError Scanning channels err:%d", err);
-		if (err == 50) printf("\nNumero de bines")
+		if (err == 50) printf("\nNumero de bines");
 		WD_AI_ContBufferReset (cardnumber);
 		WD_Buffer_Free (cardnumber, callback_data->channel0_buffer);
 		WD_Buffer_Free (cardnumber, callback_data->channel1_buffer);
@@ -74,8 +74,8 @@ void callback(){
 	I16 *buffer = callback_data->channel0_buffer;
 	int pointsperchunk = callback_data->config->nshotsperchunk * callback_data->config->bins;
 	int buffersize = pointsperchunk * sizeof(I16);
-
-	WriteFile(ch0_pipe, tbuffer, tbuffersize, byteswritten, NULL);
+	long byteswritten = 0;
+	WriteFile(ch0_pipe, buffer, buffersize, &byteswritten, NULL);
 	FlushFileBuffers(ch0_pipe);
 
 	printf("\nSent chunk size: %d", buffersize);
