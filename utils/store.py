@@ -10,7 +10,7 @@ def new_store_file(path, filename):
     datapath = os.path.join(path, filename)
     tmppath = os.path.join(path, "tmp_file")
     os.rename(datapath, tmppath)
-    file = open(path, "wb")
+    file = open(datapath, "wb")
     return file
 
 
@@ -60,7 +60,11 @@ class duplex_out_pipe:
         return data
 
     def write(self, data):
-        win32file.WriteFile(self.pipe, data)
+        try:
+            win32file.WriteFile(self.pipe, data)
+        except:
+            return -1
+            pass
 
     def set_non_blocking(self):
         win32pipe.SetNamedPipeHandleState(
@@ -95,7 +99,8 @@ while True:
     err, data = inputpipe.read(readsize)
     outpipe.write(data)
     store_data(outfile, data, now)
-    if (now.minute - time.minute) <= 5:
+    if (now.minute - time.minute) >= 5:
         outfile.close()
         rmv_old_tmp_file(sys.argv[1])
         outfile = new_store_file(sys.argv[1], "data")
+        time = datetime.datetime.now()
