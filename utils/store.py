@@ -27,13 +27,13 @@ def rmv_old_tmp_file(path):
         pass
 
 
-outpipe = pipe.duplex_pipe("ch0_store", 4096, 4096)
+readsize = configuration["Bins"] * configuration["NShotsChk"]
+outpipe = pipe.duplex_pipe("ch0_store", readsize, 4096)
 outpipe.set_non_blocking()
 inputpipe = pipe.input_pipe("ch0_raw_pipe")
 outfile = open(sys.argv[1] + "data", "wb")
 configuration = config.load("config.ini")
 
-readsize = configuration["Bins"] * configuration["NShotsChk"]
 time = datetime.datetime.now()
 while True:
     now = datetime.datetime.now()
