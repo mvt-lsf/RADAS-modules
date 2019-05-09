@@ -1,5 +1,5 @@
-import win32pipe
-import win32file
+import config
+import pipe
 import datetime
 import os
 import sys
@@ -27,72 +27,13 @@ def rmv_old_tmp_file(path):
         pass
 
 
-class input_pipe:
-    def __init__(self, pipename):
-        self.pipe = win32file.CreateFile("\\\\.\\pipe\\" + pipename,
-                                 win32file.GENERIC_READ,
-                                 0,
-                                 None,
-                                 win32file.OPEN_EXISTING,
-                                 0,
-                                 None)
-
-    def read(self, readsize):
-        return win32file.ReadFile(self.pipe, readsize)
-
-
-class duplex_out_pipe:
-    def __init__(self, pipename, in_buff_siz, out_buff_siz):
-        self.pipe = win32pipe.CreateNamedPipe("\\\\.\\pipe\\" + pipename,
-                                    win32pipe.PIPE_ACCESS_DUPLEX,
-                                    win32pipe.PIPE_TYPE_BYTE,  # | win32pipe.PIPE_WAIT,
-                                    4,
-                                    out_buff_siz,
-                                    in_buff_siz,
-                                    win32pipe.NMPWAIT_USE_DEFAULT_WAIT,
-                                    None)
-
-    def read(self, readsize):
-        try:
-            err, data = win32file.ReadFile(self.pipe, readsize)
-        except:
-            pass
-        return data
-
-    def write(self, data):
-        try:
-            win32file.WriteFile(self.pipe, data)
-        except:
-            return -1
-            pass
-
-    def set_non_blocking(self):
-        win32pipe.SetNamedPipeHandleState(
-        self.pipe, win32pipe.PIPE_TYPE_BYTE | win32pipe.PIPE_NOWAIT, None, None)
-
-
-# inputpipe = win32file.CreateFile("\\\\.\\pipe\\ch0_raw_pipe",
-#                                 win32file.GENERIC_READ,
-#                                 0,
-#                                 None,
-#                                 win32file.OPEN_EXISTING,
-#                                 0,
-#                                 None)
-#outpipe=win32pipe.CreateNamedPipe("\\\\.\\pipe\\ch0_store",
-#                                    win32pipe.PIPE_ACCESS_DUPLEX,
-#                                    win32pipe.PIPE_TYPE_BYTE,  # | win32pipe.PIPE_WAIT,
-#                                    4,
-#                                    4096,
-#                                    4096,
-#                                    win32pipe.NMPWAIT_USE_DEFAULT_WAIT,
-#                                    None)
-
-outpipe = duplex_out_pipe("ch0_store", 4096, 4096)
+outpipe = pipe.duplex_pipe("ch0_store", 4096, 4096)
 outpipe.set_non_blocking()
-inputpipe = input_pipe("ch0_raw_pipe")
+inputpipe = pipe.input_pipe("ch0_raw_pipe")
 outfile = open(sys.argv[1] + "data", "wb")
+configuration = config.load("config.ini")
 
-readsize = 4096
+readsize = configuration["Bins"] * configuration["NShotsChk"]
 time = datetime.datetime.now()
 while True:
     now = datetime.datetime.now()
