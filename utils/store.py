@@ -3,7 +3,11 @@ import pipe
 import datetime
 import os
 import sys
-import pickle
+
+try:
+   import cPickle as pickle
+except:
+   import pickle
 
 
 def new_store_file(path, filename):
@@ -15,8 +19,8 @@ def new_store_file(path, filename):
 
 
 def store_data(file, data, time):
-    pickle.dump(time, file)
-    pickle.dump(data, file)
+    pickle.dump(time, file,pickle.HIGHEST_PROTOCOL)
+    pickle.dump(data, file,pickle.HIGHEST_PROTOCOL)
 
 
 def rmv_old_tmp_file(path):
